@@ -1,0 +1,44 @@
+services:
+  app:
+    build:
+      context: .
+    container_name: laravel_app_task1
+    volumes:
+      - .:/var/www
+    networks:
+      - app-network
+    working_dir: /var/www
+      
+  web:
+    image: nginx:alpine
+    container_name: nginx_task1
+    ports:
+      - "80:80"
+      - "8000:8000"
+    volumes:
+      - .:/var/www
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+    networks:
+      - app-network
+
+  db:
+    image: mysql:5.7
+    container_name: mysql_db_task1
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: laravel
+      MYSQL_USER: laravel
+      MYSQL_PASSWORD: secret
+    volumes:
+      - dbdata:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    networks:
+      - app-network
+
+networks:
+  app-network:
+
+volumes:
+  dbdata:
